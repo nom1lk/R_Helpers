@@ -110,3 +110,39 @@ for (i in 1:length(required_packages)) {
 
 # Load packages i.e. this replaces library function
 lapply(required_packages, require, character.only = TRUE)
+
+
+
+##################################################################################################################
+##### Dynamically change the name of a column (useful if you don't know the format of data you're receiving) #####
+##################################################################################################################
+
+
+
+# create a simple dataframe:
+set.seed(1000)
+city <- runif(3,0,10) %>% round(0); metro <- runif(3,2,10) %>% round(0); suburban <- runif(3,3,10) %>% round(0)
+pets <- rbind(city, metro, suburban); colnames(pets) <- c("dogs_and_cats", "cats", "dogs")
+pets
+
+
+# Preferred method for replacing an *exact* match (because it's simplest):
+colnames(pets)[which(colnames(pets) == "dogs")] <- "canines"
+
+
+# this also replaces only *exact* column name matches
+colnames(pets)[grepl("^dogs$", colnames(pets)) %>% grep(TRUE, .)] <- "canines"
+pets
+
+
+# this changes the name of all columns *containing* the word "dogs" to "canines" (i.e. both "dogs" and "dogs_and_cats" will become "canines")
+colnames(pets)[grepl("dogs", colnames(pets)) %>% grep(TRUE, .)] <- "canines"
+pets
+
+
+
+
+
+
+
+
