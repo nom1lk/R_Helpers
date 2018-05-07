@@ -78,6 +78,28 @@ tryCatch(
 
 
 
+###########################################################################
+##### Detach Packages (e.g. for accommodation of both plyr and dplyr) #####
+###########################################################################
+
+
+detach_package <- function(pkg, character.only = FALSE)
+{
+  if(!character.only)
+  { pkg <- deparse(substitute(pkg)) }
+  search_item <- paste("package", pkg, sep = ":")
+  while(search_item %in% search())
+  { detach(search_item, unload = TRUE, character.only = TRUE) }
+}
+detach_package(broom)
+detach_package(recipes)
+detach_package(dplyr)
+
+
+
+
+
+
 #################################################
 ##### Install and load a vector of packages #####
 #################################################
@@ -85,6 +107,7 @@ tryCatch(
 
 required_packages <- c(
   "RODBC"
+  , "plyr" # ALWAYS load plyr before dplyr # ALWAYS detach packages prior to loading plyr/dplyr
   , "dplyr"
   , "stringr"
   , "reshape2"
@@ -96,6 +119,19 @@ required_packages <- c(
   , "data.table"
   , "stringr"
   , "RDCOMClient"
+  , "rvest"
+  , "httr"
+  , "mailR"
+  , "curl"
+  , "RCurl"
+  , "caret"
+  , "tm"
+  , "SnowballC"
+  , "arm"
+  , "doParallel"
+  , "caTools"
+  , "xlsx"
+  , "jsonlite"
 )
 
 
