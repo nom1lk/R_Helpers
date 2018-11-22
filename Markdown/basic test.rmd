@@ -1,8 +1,7 @@
 ---
 title: "Analysis file"
 output: 
-  html_document:
-    code_folding: show
+  rmarkdown::github_document
 highlight: pygments
 theme: spacelab
 df_print: paged
