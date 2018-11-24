@@ -435,11 +435,39 @@ search() # lists all parents of the global environment
 
 
 
+## Behaviour when setting default arguments
+
+Here a function will double x unless triple = TRUE, in which case it will triple it
+
+```{r}
+
+
+double_me <- function(x) { 2 * x }
+double_me(12.436)
+
+
+multiply_me <- function(x, triple) { 
+  
+  if (missing(triple)) { triple <- FALSE}
+  
+  if (triple == TRUE) {
+  3 * x 
+    } else {
+      2 * x
+      } %>% return(.)
+
+}
+
+multiply_me(123.234)
+multiply_me(123.234, triple = TRUE)
 
 
 
 
 
+
+
+```
 
 
 
