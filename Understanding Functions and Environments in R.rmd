@@ -2,11 +2,18 @@
 title: "Understanding functions in R"
 output: 
   html_document:
-  code_folding: show
+#    code_folding: hide
+  toc: true
 highlight: pygments
 ---
   
 
+```{r message=FALSE}
+library(dplyr)
+```
+
+
+<br><br>
 Functions will only print the last line of output 
 
 
@@ -22,8 +29,7 @@ ftest()
 
 ```
 
-
-
+<br><br>
 
 
 
@@ -44,7 +50,7 @@ ftest()
 ```
 
 
-
+<br><br>
 
 
 Here we do not define y within the scope of the function, so R looks to the parent, and finds y in the global environment
@@ -60,7 +66,7 @@ ftest()
 ```
 
 
-
+<br>
 
 If y is not available in the environment from which the function is called or any ancestors, it errors
 
@@ -73,10 +79,7 @@ ftest()
 ```
 
 
-
-
-
-
+<br><br>
 
 If we tell a function that it will have arguments passed to it, then it must receive those arguments *unless* the function doesn't actually use them
 Also, it doesn't matter whether something of the same name is available globally, if the argument is not provided in the function call, it will error
@@ -89,6 +92,7 @@ ftest()
 
 ```
 
+<br><br>
 
 Function doesn't receive y or z, but it doesn't use them so there is no error
 
@@ -100,12 +104,13 @@ ftest()
 
 ```
 
-
+<br><br>
 
 ```{r eval=FALSE, echo=TRUE}
 ftest <- function() { z * 2 }
 ftest()
 ```
+<br>
 
 ```{r, eval=FALSE, echo=TRUE}
 # However, lazy evaluation should have meant this wouldn't error 
@@ -113,7 +118,7 @@ ftest <- function(y, x) { y * 2 }
 ftest()
 ```
 
-
+<br>
 ```{r, eval=FALSE, echo=TRUE}
 # Here we 
 ftest <- function(y) { y * 2 }
@@ -125,12 +130,12 @@ ftest(2)
 
 
 
-
+<br><br><br>
 
 ## Understanding error: "promise already under evaluation: recursive default argument reference or earlier problems?"
 From [here](https://stackoverflow.com/questions/8425348/unexpected-behaviour-with-argument-defaults)
 
-R will look for an argument value by first checking the local environment (i.e. inside the function being called), before looking in the parent environment (e.g. perhaps the global environment)
+This is simply because R won't allow you to use the same argument name for a function within a function
 
 
 ```{r, eval=FALSE, echo=TRUE}
@@ -148,17 +153,17 @@ f2() # Errors
 
 ```
 
-
+<br><br>
 
 
 ## Understanding functions within functions 
 
+
+Here we can see that the inner_function can access the arguments that were provided to the outer_function,
+Which makes sense, since functions can access objects from the global environment
+Possible lesson: environments can access all the variables from their ancestors
+
 ```{r, eval=FALSE, echo=TRUE}
-
-# Here we can see that the inner_function can access the arguments that were provided to the outer_function, 
-# Which makes sense, since functions can access objects from the global environment
-# Possible lesson: environments can access all the variables from their ancestors
-
 
 outer_function <- function(x, y, ...) { 
   
@@ -182,8 +187,9 @@ outer_function <- function(x, y, ...) {
 outer_function("hi", "bye", "here", "now")
 
 
-
-
+```
+<br>
+```{r}
 
 
 HelloWorld <- function(...) {
@@ -196,7 +202,10 @@ HelloWorld <- function(...) {
 HelloWorld("Hello", "World", "!")
 
 
+```
 
+<br>
+```{r}
 
 HelloWorld <- function(x, ...) {
   arguments <- list(...)
@@ -207,7 +216,11 @@ HelloWorld <- function(x, ...) {
 
 HelloWorld("Hello", "World", "!")
 
+```
 
+<br>
+
+```{r}
 
 
 HelloWorld <- function(x, ...) {
@@ -220,9 +233,10 @@ HelloWorld <- function(x, ...) {
 
 HelloWorld("Hello", "World", "!")
 
+```
 
 
-
+```{r}
 
 
 
@@ -252,6 +266,131 @@ HelloWorld("Hello", "World", "!")
 HelloWorld(x = "Hello", "world", "!")
 
 ```
+
+<br><br><br>
+
+
+## Using the ellipses to pass unnamed arguments to a function 
+
+```{r} 
+
+do_things <- function(weather, show_weather, ...) {
+  
+  if (show_weather) { paste0("It's ", weather, " outside!") %>% print }
+  
+  
+  arguments <- list(...)
+  
+  paste0("I like the numbers ", arguments[[1]], ", ", arguments[[2]], ", and ", arguments[[3]], ".") %>% print()
+  { arguments[[4]] + arguments[[5]] } %>% print()
+  arguments[[6]] ^ 2 %>% print()
+  
+  
+}
+
+do_things("hot", TRUE, 1,2,3,4,5,6)
+
+```
+
+
+<br><br><br>
+
+
+
+
+## Returning console output 
+
+### Example 1
+
+This function will print the console output for the last line (only) that's executed inside the function
+
+```{r}
+
+
+HelloWorld <- function(...) {
+  arguments <- list(...)
+  paste(arguments)
+  arguments[[1]]
+  arguments[[2]] # Try commenting this line out 
+  arguments[[3]] # Try commenting this line out
+}
+
+HelloWorld("Hello", "World", "!")
+
+
+
+
+
+```
+
+
+
+
+
+### Example 2
+
+In this function, nothing will be seen in the console
+
+```{r} 
+
+add_me <- function(...) {
+  
+  arguments <- list(...)
+  
+  for (i in 1:length(arguments)) {
+    arguments[i]
+  }
+}
+
+add_me(1,2,3,4,5,6)
+
+
+```
+
+But this variation print everything we explicity tell it to with print() (but try commenting that line out and simply having arguments[i])
+
+
+```{r} 
+
+add_me <- function(...) {
+  
+  arguments <- list(...)
+  
+  for (i in 1:length(arguments)) {
+    print(arguments[i])
+    # arguments[i]
+  }
+}
+
+add_me(1,2,3,4,5,6)
+
+
+```
+
+
+
+
+
+One elegant solution would be to pipe everything to print()
+
+
+```{r}
+
+add_me <- function(...) {
+  
+  arguments <- list(...)
+  
+  for (i in 1:length(arguments)) {
+    arguments[i] %>% print()
+  }
+  
+  
+}
+
+add_me(1,2,3,4,5,6)
+
+```
+
 
 
 
@@ -437,15 +576,20 @@ search() # lists all parents of the global environment
 
 ## Behaviour when setting default arguments
 
-Here a function will double x unless triple = TRUE, in which case it will triple it
+A simple function that will double a number..
 
 ```{r}
-
 
 double_me <- function(x) { 2 * x }
 double_me(12.436)
 
+```
 
+
+
+Here a function will double x unless triple = TRUE, in which case it will triple it
+
+```{r}
 multiply_me <- function(x, triple) { 
   
   if (missing(triple)) { triple <- FALSE}
