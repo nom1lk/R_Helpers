@@ -7,6 +7,8 @@ output:
 highlight: pygments
 ---
   
+This is a quick guide to understanding the behaviour of functions in R. 
+
 
 ```{r message=FALSE}
 library(dplyr)
@@ -14,7 +16,7 @@ library(dplyr)
 
 
 <br><br>
-Functions will only print the last line of output 
+Functions will only print the last line of output. Functions can only return one object (but it can be a list of other objects), and the function will return the result of the last executed line of code by default. If `return()` is used, the function will stop running at that point (so any code inside the function below the `return()` will not be executed). Note that if the last statement happens to be a print statement, the function will 'return' that (and only that, meaning any object you thought may also be returned will not be returned)
 
 
 ```{r}
@@ -30,8 +32,6 @@ ftest()
 ```
 
 <br><br>
-
-
 
 If we call a function that operates on some variable, then the variable must be available in the environment in which the function is called, or some ancestor environment.
 
@@ -586,6 +586,7 @@ double_me(12.436)
 ```
 
 
+### How to set a default value for a function
 
 Here a function will double x unless triple = TRUE, in which case it will triple it
 
