@@ -235,3 +235,36 @@ wordcloud(words = d$word, freq = d$freq, min.freq = 1,
 
 
 
+
+
+
+
+#################
+##### Timer #####
+#################
+
+# Timer
+timer <- function(time_out) { 
+  
+  if(missing(time_out)) {time_out <- 5}
+  
+  cat("Waiting ")
+  
+  for(i in 1:(as.numeric(time_out))) {
+    Sys.sleep(1); cat(" ", i)
+  }
+}
+
+# Example usage 
+timer(10)
+timer()
+
+
+
+
+
+
+
+
+
+
