@@ -616,6 +616,82 @@ multiply_me(123.234, triple = TRUE)
 
 
 
+# Futher notes on environments, scopes, and assignments
+
+### We can create a variable in a specific environment in two ways
+```{r}
+
+# https://stackoverflow.com/questions/54830589/strictly-speaking-does-the-scoping-assignment-assign-to-the-parent-environme
+
+env = new.env()
+env$abc <- 2222 
+
+
+local(abc <- 2222, env)
+
+
+# E.g.
+# Create environments 
+rm(list=ls()); env = new.env(); child_of_env = new.env(parent = env)
+# Note, a variable can be assigned to a particular environment like so
+env$abc <- 2222
+ls(env)
+# [1] "abc"
+
+```
+
+### Three experiments to show: 
+    <ul>
+      <li>How to make an environment inside another environment</li>
+      <li>How to assign to a child environment</li>
+      <li>How using x <<- 2 in a child environment will walk up environments until it finds x and assign it, 
+      if it doesn't find x in any higher environment, it will assign it in the global environment</li>
+    </ul>
+
+
+```{r}
+
+
+# Create environments 
+rm(list=ls()); env = new.env(); child_of_env = new.env(parent = env)
+
+local(x <- 42, child_of_env)
+ls(env)
+ls(child_of_env)
+ls()
+
+# Create environments 
+rm(list=ls()); env = new.env(); child_of_env = new.env(parent = env)
+
+local(x <<- 42, child_of_env)
+ls(env)
+ls(child_of_env)
+ls()
+
+
+
+
+# Create environments
+rm(list=ls()); env = new.env(); child_of_env = new.env(parent = env)
+
+env$x <- 2
+local(x <<- 42, child_of_env)
+ls(env)
+env$x
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
 
 
 
